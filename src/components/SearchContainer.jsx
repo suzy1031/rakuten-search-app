@@ -1,12 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+
+/*
+style
+*/
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+
+/*
+component
+*/
+import Result from './Result';
 
 const BASE_URL =
   'https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?format=json';
+
+const FREE_WORD = 'フリーワード';
+const ERROR_FREE_WORD = 'フリーワードを入力してください。';
 
 const SearchContainer = () => {
   const [value, setValue] = useState({
@@ -16,6 +30,7 @@ const SearchContainer = () => {
     freeWord: false,
   });
   const [fetching, setFetching] = useState(false);
+  const [result, setResult] = useState([]);
 
   const handleFreeWord = (e) => {
     setError({
@@ -33,10 +48,10 @@ const SearchContainer = () => {
       const encodedParams = encodeFreeWord(params);
       axios
         .get(
-          `${BASE_URL}&keyword=${encodedParams}&applicationId=${process.env.REACT_APP_APPLICATION_ID}`
+          `${BASE_URL}&keyword=${encodedParams}&page=1&applicationId=${process.env.REACT_APP_APPLICATION_ID}`
         )
         .then((response) => {
-          console.log(response.data);
+          setResult(response.data);
           setFetching(false);
         })
         .catch((error) => {
@@ -56,6 +71,7 @@ const SearchContainer = () => {
     var urlEncode = require('urlencode');
     return urlEncode(params);
   };
+
   return (
     <>
       <Box
@@ -68,13 +84,13 @@ const SearchContainer = () => {
       >
         <TextField
           id='freeWord'
-          label='フリーワード'
+          label={FREE_WORD}
           variant='outlined'
           name='freeWord'
           value={value.freeWord}
           onChange={handleFreeWord}
           error={error.freeWord && true}
-          helperText={error.freeWord && 'フリーワードを入力してください。'}
+          helperText={error.freeWord && ERROR_FREE_WORD}
         />
         <br></br>
         <Button variant='outlined' onClick={handleSubmit}>
@@ -82,7 +98,7 @@ const SearchContainer = () => {
         </Button>
       </Box>
       <Box sx={{ display: 'flex' }}>
-        {fetching ? <CircularProgress /> : <h1>検索結果</h1>}
+        {fetching ? <CircularProgress /> : <Result result={result} />}
       </Box>
     </>
   );
