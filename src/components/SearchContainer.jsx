@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import useFetchData from '../hooks/useFetch';
 
 /*
 style
 */
+import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -16,60 +17,20 @@ component
 */
 import Result from './Result';
 
-const BASE_URL =
-  'https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?format=json';
-
 const FREE_WORD = 'フリーワード';
 const ERROR_FREE_WORD = 'フリーワードを入力してください。';
 
 const SearchContainer = () => {
+  const { error, setError, fetching, result, handleSubmit } = useFetchData();
   const [value, setValue] = useState({
     freeWord: '',
   });
-  const [error, setError] = useState({
-    freeWord: false,
-  });
-  const [fetching, setFetching] = useState(false);
-  const [result, setResult] = useState([]);
 
   const handleFreeWord = (e) => {
     setError({
       freeWord: false,
     });
     setValue({ [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = () => {
-    const params = value.freeWord;
-
-    if (params) {
-      setFetching(true);
-
-      const encodedParams = encodeFreeWord(params);
-      axios
-        .get(
-          `${BASE_URL}&keyword=${encodedParams}&page=1&applicationId=${process.env.REACT_APP_APPLICATION_ID}`
-        )
-        .then((response) => {
-          setResult(response.data);
-          setFetching(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          setFetching(false);
-        });
-    } else {
-      console.log('検索条件を入力してください。');
-      setError({
-        freeWord: true,
-      });
-      setFetching(false);
-    }
-  };
-
-  const encodeFreeWord = (params) => {
-    var urlEncode = require('urlencode');
-    return urlEncode(params);
   };
 
   return (
@@ -93,13 +54,24 @@ const SearchContainer = () => {
           helperText={error.freeWord && ERROR_FREE_WORD}
         />
         <br></br>
-        <Button variant='outlined' onClick={handleSubmit}>
+        <Button variant='outlined' onClick={() => handleSubmit(value)}>
           Submit
         </Button>
       </Box>
-      <Box sx={{ display: 'flex' }}>
-        {fetching ? <CircularProgress /> : <Result result={result} />}
-      </Box>
+      <Grid
+        container
+        direction='row'
+        justifyContent='center'
+        alignItems='center'
+      >
+        {fetching ? (
+          <Box m={10}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Result result={result} />
+        )}
+      </Grid>
     </>
   );
 };
