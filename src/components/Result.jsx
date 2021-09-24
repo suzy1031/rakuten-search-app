@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import { Grid } from '@mui/material';
 
+// 商品名を45文字目以降「...」にする
 function convertSubString(string) {
   const name = string;
   if (name.length > 45) {
@@ -56,7 +57,13 @@ const Result = ({ result }) => {
 export default Result;
 
 Result.propTypes = {
-  result: PropTypes.object.isRequired,
+  result: PropTypes.shape({
+    Item: PropTypes.shape({
+      mediumImageUrls: PropTypes.array.isRequired,
+      itemPrice: PropTypes.number.isRequired,
+      itemName: PropTypes.string.isRequired,
+    }),
+  }),
 };
 
 Result.defaultProps = {

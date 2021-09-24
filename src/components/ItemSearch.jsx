@@ -40,14 +40,25 @@ const ItemSearch = ({ value, error, handleFreeWord, handleSubmit }) => {
 };
 export default ItemSearch;
 
+// 今回はts使わずにpropTypesで型チェック
 ItemSearch.propTypes = {
-  value: PropTypes.object.isRequired,
-  error: PropTypes.object.isRequired,
+  value: PropTypes.shape({
+    freeWord: PropTypes.string.isRequired,
+  }),
+  error: PropTypes.shape({
+    freeWord: PropTypes.bool.isRequired,
+  }),
   handleFreeWord: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
 };
 
 ItemSearch.defaultProps = {
-  value: {},
-  error: {},
+  value: {
+    freeWord: '',
+  },
+  error: {
+    freeWord: false,
+  },
+  handleFreeWord: () => {},
+  handleSubmit: () => {},
 };
