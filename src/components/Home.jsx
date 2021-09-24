@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+// custom hookをimport
 import useFetchData from '../hooks/useFetch';
 
 /*
@@ -15,15 +16,20 @@ import Result from './Result';
 import ItemSearch from './ItemSearch';
 
 const Home = () => {
+  // custom hookでreturnされたobjectのvalue
   const { error, setError, fetching, result, handleSubmit } = useFetchData();
+  // custom hookに渡すstate
   const [value, setValue] = useState({
     freeWord: '',
   });
 
+  // 検索フィールドを監視
   const handleFreeWord = (e) => {
+    // 文字を打ち始めたらstate初期化
     setError({
       freeWord: false,
     });
+    // 入力文字を{ freeWord: '' }の形でstateで管理
     setValue({ [e.target.name]: e.target.value });
   };
 
@@ -41,11 +47,13 @@ const Home = () => {
         justifyContent='center'
         alignItems='center'
       >
+        {/* フェッチ中はローディングがクルクルする */}
         {fetching ? (
           <Box m={10}>
             <CircularProgress />
           </Box>
         ) : (
+          // フェッチが完了したらレスポンスデータを表示
           <Result result={result} />
         )}
       </Grid>
