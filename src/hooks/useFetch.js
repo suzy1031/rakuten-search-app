@@ -9,7 +9,7 @@ const useFetchData = () => {
     freeWord: false,
   });
   const [fetching, setFetching] = useState(false);
-  const [result, setResult] = useState([]);
+  const [result, setResult] = useState({});
 
   const handleSubmit = (value) => {
     const params = value.freeWord;
