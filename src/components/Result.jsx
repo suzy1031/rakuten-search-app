@@ -1,4 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
+/*
+ * style
+ */
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -6,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import { Grid } from '@mui/material';
 
-function subString(string) {
+function convertSubString(string) {
   const name = string;
   if (name.length > 45) {
     const splitName = name.substring(0, 45);
@@ -36,7 +41,7 @@ const Result = ({ result }) => {
                         {item.Item.itemPrice.toLocaleString()}円
                       </Typography>
                       <Typography variant='body2' color='text.secondary'>
-                        {subString(item.Item.itemName)}
+                        {convertSubString(item.Item.itemName)}
                       </Typography>
                     </CardContent>
                   </CardActionArea>
@@ -49,3 +54,11 @@ const Result = ({ result }) => {
   );
 };
 export default Result;
+
+Result.propTypes = {
+  result: PropTypes.object.isRequired,
+};
+
+Result.defaultProps = {
+  result: {},
+};
